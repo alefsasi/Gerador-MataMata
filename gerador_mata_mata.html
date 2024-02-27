@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- font awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>Gerador de Mata a Mata</title>
+    <meta charset="utf-8">
+</head>
+<style>
+    body {
+        background-color: #f8f8f8;
+    }
+    nav {
+        background-color: #c6c6c6;
+    }
+    .mt50px {
+        margin-top: 50px;
+    }
+
+    .mb100px {
+        margin-bottom: 100px;
+    }
+
+    .mt30px {
+        margin-top: 30px;
+    }
+
+    .excluir-player {
+        cursor: pointer;
+    }
+
+    td input {
+        width: 55px;
+    }
+
+    .winner {
+        font-weight: 700;
+    }
+</style>
+
+<body>
+    <nav class="navbar navbar-light">
+        <span class="navbar-brand mb-0 h1">Gerador de Mata a Mata</span>
+    </nav>
+    <main role="main" class="container">
+        <div class="row mt50px">
+            <h2> Gerador de Mata a Mata</h2>
+        </div>
+        <a href="javascript:mock();">MOCK</a>
+        <div class="row mt50px" id="form-players">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="player-name">Player Name</label>
+                    <input type="text" class="form-control" id="player-name" placeholder="José ....">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="deck-name">Deck Name</label>
+                    <input type="text" class="form-control" id="deck-name" placeholder="Six Samurai...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group" style="margin-top:32px;">
+                    <button type="button" class="btn btn-primary" id="add-player" data-toggle="tooltip"
+                        data-placement="Adicionar player">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt50px">
+            <div class="col-md-12">
+                <h2>Participantes!</h2>
+                <table class="table table-bordered table-striped" id="player-table" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="5%">#</th>
+                            <th scope="col">Player</th>
+                            <th scope="col">Deck</th>
+                            <th scope="col" width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="player-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mt50px">
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary" id="gerar-tabela" data-toggle="tooltip"
+                    data-placement="Gerar Torneio" disabled>Gerar Torneio</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container-vitoria"></div>
+        </div>
+
+        <div class="container-keys mb100px mt30px">
+        </div>
+
+    </main>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+
+
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        let listJogadores = [];
+        let listRodadas = [];
+        let vencedor = null;
+        let segundo = null;
+        let terceiro = null;
+
+
+
+
+        function mock() {
+
+            listJogadores.push({ id: 1, player: 'marcos', deck: 'gravekeepers' });
+            listJogadores.push({ id: 2, player: 'neto', deck: 'lightsworn' });
+            listJogadores.push({ id: 3, player: 'johan', deck: 'crystal beast' });
+            listJogadores.push({ id: 4, player: 'aleff', deck: 'six Samurai' });
+            // listJogadores.push({ id: 5, player: 'vinicius', deck: 'blackwing' });
+            // listJogadores.push({ id: 6, player: 'joão', deck: 'ninja' });
+            // listJogadores.push({ id: 7, player: 'josé', deck: 'fire king' });
+            // listJogadores.push({ id: 8, player: 'bruno', deck: 'fire first' });
+            // listJogadores.push({ id: 9, player: 'lucas', deck: 'mermail' });
+            // listJogadores.push({ id: 10, player: 'gabriel', deck: 'alien' });
+            // listJogadores.push({ id: 11, player: 'manoel', deck: 'super heavy samurai' });
+            // listJogadores.push({ id: 12, player: 'marcio', deck: 'constellar' });
+            // listJogadores.push({ id: 13, player: 'yugi', deck: 'black magician' });
+            // listJogadores.push({ id: 14, player: 'kaiba', deck: 'blue-eyes' });
+            // listJogadores.push({ id: 15, player: 'joey', deck: 'red eyes' });
+            // listJogadores.push({ id: 16, player: 'marcelo', deck: 'evilswarm' });
+
+            listJogadores.forEach(player => addRow(player));
+
+            disableButttonCriar();
+            showTable();
+        }
+
+
+
+        function GerarChaves(listJogadores, isTerceiro = false) {
+
+            let qtdJogadores = listJogadores.length;
+            let chavesTorneio = [];
+            let isImpar = qtdJogadores % 2;
+
+            if (isImpar > 0) {
+                listJogadores.push({ id: 0, player: '', deck: '' });
+            }
+
+            var cpylist = listJogadores;
+
+            let i = 1;
+
+            while (cpylist.length > 0) {
+                let player1 = getPlayer(cpylist);
+
+                cpylist = cpylist.filter(x => x.id !== player1.id);
+
+                let player2 = getPlayer(cpylist);
+
+                cpylist = cpylist.filter(x => x.id !== player2.id);
+
+                if (player1.id === 0) {
+                    chavesTorneio.push({ id: i++, player1: player1, player2: player2, result1: null, result2: null, playerWin: player2, isTerceiro: isTerceiro })
+                } else if (player2.id === 0) {
+                    chavesTorneio.push({ id: i++, player1: player1, player2: player2, result1: null, result2: null, playerWin: player1, isTerceiro: isTerceiro })
+                } else {
+                    chavesTorneio.push({ id: i++, player1: player1, player2: player2, result1: null, result2: null, playerWin: null, isTerceiro: isTerceiro })
+                }
+
+            }
+
+            return chavesTorneio
+
+        }
+
+        function getPlayer(cpylist) {
+            var idx = getRandomIdx(cpylist.length);
+            return cpylist[idx];
+        }
+
+
+        function getRandomIdx(len) {
+
+            return Math.floor(Math.random() * len);
+        }
+
+
+
+        $("#add-player").click(function (e) {
+
+            const playerName = $('#player-name').val().trim();
+            const deckName = $('#deck-name').val().trim();
+
+            if (!playerName || !deckName) {
+
+                alert("Os campos Precisam ser preenchidos");
+                return;
+            }
+
+            if (listJogadores.findIndex(x => x.player == playerName) > 0) {
+                alert("Player já foi adicionado!");
+                return;
+            }
+
+            let player = { id: getNewPlayerId(listJogadores.length + 1), player: playerName, deck: deckName };
+            addRow(player);
+
+            listJogadores.push(player);
+
+            disableButttonCriar();
+            showTable();
+            cleanFields();
+        });
+
+        function showTable() {
+            if (listJogadores.length > 0) {
+                $("#player-table").show();
+            } else {
+                $("#player-table").hide();
+            }
+        }
+
+        function disableButttonCriar() {
+
+            if (listJogadores.length >= 4) {
+                $("#gerar-tabela").attr("disabled", false);
+            } else {
+                $("#gerar-tabela").attr("disabled", true);
+            }
+        }
+
+        function cleanFields() {
+            $('#player-name').val('');
+            $('#deck-name').val('');
+        }
+
+        function getNewPlayerId(newId) {
+
+            if (listJogadores.findIndex(x => x.id == newId) > 0)
+                newId = getNewPlayerId(newId++)
+
+
+            return newId;
+        }
+
+        function addRow(player) {
+            // Get the table body element in which you want to add row
+            let table = document.getElementById("player-table-body");
+
+            // Create row element
+            let row = document.createElement("tr");
+
+            // Create cells
+            let c1 = document.createElement("td");
+            let c2 = document.createElement("td");
+            let c3 = document.createElement("td");
+            let c4 = document.createElement("td");
+
+            //Create cell delete row
+            let excludeCell = document.createElement("i");
+
+            excludeCell.classList.add("fa-solid");
+            excludeCell.classList.add("fa-trash");
+            excludeCell.classList.add("text-danger");
+            excludeCell.classList.add("excluir-player");
+            excludeCell.setAttribute("player-id", player.id);
+
+
+            // Insert data to cells
+            c1.innerText = player.id;
+            c1.style.textAlign = "center";
+            c2.innerText = player.player
+            c3.innerText = player.deck
+            c4.appendChild(excludeCell);
+
+            // Append cells to row
+            row.appendChild(c1);
+            row.appendChild(c2);
+            row.appendChild(c3);
+            row.appendChild(c4);
+
+            // Append row to table body
+            table.appendChild(row);
+
+
+            $(".excluir-player").click(function (e) {
+
+
+                let cell = $(this).parent().parent();
+                cell.remove();
+
+                removePlayerFromList($(this).attr('player-id'));
+
+                disableButttonCriar();
+                showTable();
+            });
+
+        }
+
+        function removePlayerFromList(playerId) {
+            if (playerId) {
+                listJogadores = listJogadores.filter(x => +x.id !== +playerId);
+            }
+        }
+
+
+
+        $("#gerar-tabela").click(function (e) {
+
+            var chaves = GerarChaves(listJogadores);
+
+            listRodadas.push(chaves);
+
+            createTableRodada(listRodadas.length, chaves);
+
+            hideCreateditens();
+        });
+
+        function hideCreateditens() {
+
+            $("#gerar-tabela").hide();
+            $("#form-players").hide();
+
+            var trashes = document.getElementsByClassName("excluir-player");
+
+            Array.from(trashes).forEach(function (item) {
+                item.remove();
+            });
+
+        }
+
+        function gerarNovaRodada(rodadaId) {
+
+            var ultima = listRodadas[rodadaId - 1].length;
+
+            //Definido vencedor
+            if (listRodadas[rodadaId - 1].length === 1) {
+
+                if (!listRodadas[rodadaId - 1][0].isTerceiro) {
+                    vencedor = listRodadas[rodadaId - 1][0].playerWin;
+                    segundo = listRodadas[rodadaId - 1][0].result1 > listRodadas[rodadaId - 1][0].result2 ?
+                        listRodadas[rodadaId - 1][0].player2 : listRodadas[rodadaId - 1][0].player1
+
+                } else {
+
+                    terceiro = listRodadas[rodadaId - 1][0].playerWin;
+                }
+
+                $("#finalizar-rodada-" + rodadaId).hide();
+
+                if (vencedor && segundo && terceiro) {
+                    createTableFinal();
+                }
+
+                return;
+            }
+
+            var vencedoresRodada = [];
+
+            listRodadas[rodadaId - 1].forEach(chave => {
+                vencedoresRodada.push(chave.playerWin);
+            });
+
+            var chaves = GerarChaves(vencedoresRodada);
+            listRodadas.push(chaves);
+
+            if (chaves.length === 1) {
+                var chaveTerceiro = gerarChaveTerceiro(listRodadas[rodadaId - 1]);
+                listRodadas.push(chaveTerceiro);
+                createTableRodada(rodadaId + 2, chaveTerceiro);
+            }
+
+
+            createTableRodada(rodadaId + 1, chaves);
+
+            $("#finalizar-rodada-" + rodadaId).hide();
+        }
+        function gerarChaveTerceiro(chaves) {
+            var perdedores = [];
+
+            chaves.forEach(chave => {
+                var perdedor = chave.result1 > chave.result2 ? chave.player2 : chave.player1
+                perdedores.push(perdedor);
+            });
+
+
+            return GerarChaves(perdedores, true);
+        }
+
+        function createTableFinal() {
+            var div = document.getElementsByClassName("container-vitoria")[0];
+
+
+            let title = document.createElement("h2");
+            title.innerText = `Vencedores!`;
+
+
+            let table = document.createElement("table");
+            table.classList.add("table");
+            table.classList.add("table-bordered");
+            table.classList.add("table-striped");
+
+            let thead = document.createElement("thead");
+
+            let head = document.createElement("tr");
+
+            // Create cells
+            let th0 = document.createElement("th");
+            let th1 = document.createElement("th");
+            let th2 = document.createElement("th");
+            let th3 = document.createElement("th");
+
+            th0.innerText = "#";
+            th1.innerText = "PLAYER";
+            th2.innerText = "DECK";
+            th3.innerText = "POSIÇÃO";
+
+            head.appendChild(th0);
+            head.appendChild(th1);
+            head.appendChild(th2);
+            head.appendChild(th3);
+
+            thead.appendChild(head);
+
+            let tbody = document.createElement("tbody");
+
+            //CAMPEÃO
+
+            let row1 = document.createElement("tr");
+
+            let c0 = document.createElement("td");
+            let c1 = document.createElement("td");
+            let c2 = document.createElement("td");
+            let c3 = document.createElement("td");
+
+            c0.innerText = vencedor.id;
+            c1.innerText = vencedor.player;
+            c2.innerText = vencedor.deck;
+            c3.innerHTML = '<i class="fa-solid fa-trophy" style="color: #daa520;"></i>' + '<span style="margin-left: 10px;">CAMPEÃO</span>';
+
+            row1.appendChild(c0);
+            row1.appendChild(c1);
+            row1.appendChild(c2);
+            row1.appendChild(c3);
+
+            tbody.appendChild(row1);
+
+            //SEGUNDO COLOCADO
+
+            let row2 = document.createElement("tr");
+
+            let s0 = document.createElement("td");
+            let s1 = document.createElement("td");
+            let s2 = document.createElement("td");
+            let s3 = document.createElement("td");
+
+            s0.innerText = segundo.id;
+            s1.innerText = segundo.player;
+            s2.innerText = segundo.deck;
+            s3.innerHTML = '<i class="fa-solid fa-trophy" style="color: #c0c0c0;"></i>' + '<span style="margin-left: 10px;">SEGUNDO</span>';
+
+            row2.appendChild(s0);
+            row2.appendChild(s1);
+            row2.appendChild(s2);
+            row2.appendChild(s3);
+
+            tbody.appendChild(row2);
+
+            //TERCEIRO COLOCADO
+
+            let row3 = document.createElement("tr");
+
+            let t0 = document.createElement("td");
+            let t1 = document.createElement("td");
+            let t2 = document.createElement("td");
+            let t3 = document.createElement("td");
+
+            t0.innerText = terceiro.id;
+            t1.innerText = terceiro.player;
+            t2.innerText = terceiro.deck;
+            t3.innerHTML = '<i class="fa-solid fa-trophy" style="color: #cd7f32;"></i>' + '<span style="margin-left: 10px;">TERCEIRO</span>';
+
+            row3.appendChild(t0);
+            row3.appendChild(t1);
+            row3.appendChild(t2);
+            row3.appendChild(t3);
+
+            tbody.appendChild(row3);
+
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            div.appendChild(title);
+            div.appendChild(table);
+
+        }
+
+        function createTableRodada(rodada, chaves) {
+
+            var div = document.getElementsByClassName("container-keys");
+
+            let tableDiv = document.createElement("div");
+            tableDiv.setAttribute("id", "rodada-" + rodada);
+            tableDiv.classList.add("row");
+            tableDiv.classList.add("mt50px");
+
+            let title = document.createElement("h2");
+            title.innerText = `Rodada: ${rodada} ${tipoRodada(chaves.length)}`;
+
+
+
+
+            let btnFinalizarRodada = document.createElement("button");
+            btnFinalizarRodada.classList.add("btn");
+            btnFinalizarRodada.classList.add("btn-primary");
+            btnFinalizarRodada.setAttribute("id", "finalizar-rodada-" + rodada);
+            btnFinalizarRodada.setAttribute("rodadaId", rodada);
+            btnFinalizarRodada.setAttribute("disabled", true);
+            btnFinalizarRodada.innerText = "Finalizar Rodada";
+
+
+            if (chaves.length === 1 && chaves[0].isTerceiro) {
+                title.innerText = `Rodada: ${rodada - 1} - TERCEIRO LUGAR`;
+            }
+
+            let table = document.createElement("table");
+            table.classList.add("table");
+            table.classList.add("table-bordered");
+
+
+            let tbody = document.createElement("tbody");
+
+
+            for (var chave in chaves) {
+                let row = getTableRow(rodada, chaves[chave]);
+                tbody.appendChild(row);
+            }
+
+            var thead = getTableHead();
+
+            table.appendChild(thead);
+
+            table.appendChild(tbody);
+            tableDiv.appendChild(title);
+            tableDiv.appendChild(table);
+            tableDiv.appendChild(btnFinalizarRodada);
+            div[0].appendChild(tableDiv);
+
+
+            $(".input-result").keypress(function (e) {
+                return onlyNumbers(e);
+            });
+
+            $(".input-result").change(function (e) {
+                var result = $(this).val();
+                var playerId = $(this).attr("playerId");
+                var gameId = $(this).attr("gameId");
+                var rodadaId = $(this).attr("rodadaId");
+
+                SetResultado(+result, +playerId, +gameId, +rodadaId);
+            });
+
+            $("#finalizar-rodada-" + rodada).click(function (e) {
+                var rodadaId = $(this).attr("rodadaId");
+
+                var inputs = $(".input-result");
+
+                Array.from(inputs).forEach(inpt => {
+                    var id = inpt.getAttribute("rodadaId");
+
+                    if ( +id === +rodadaId) {
+                        inpt.setAttribute("disabled", true);
+                    }
+
+                });
+
+                verificarVencedores(+rodadaId);
+
+                gerarNovaRodada(+rodadaId);
+            });
+        }
+
+        function tipoRodada(numChaves) {
+            switch (+numChaves) {
+
+                case 1:
+                    return " - FINAL";
+                case 2:
+                    return " - SEMI-FINAL";
+                case 4:
+                    return " - QUARTAS DE FINAL";
+            }
+            return "";
+        }
+
+        function verificarVencedores(rodadaId) {
+            var rows = document.getElementsByClassName("rodada-" + rodadaId);
+
+            Array.from(rows).forEach(row => {
+                var cells = row.getElementsByClassName("player");
+
+                Array.from(cells).forEach(cell => {
+                    var playerId = cell.getAttribute("playerId");
+
+                    if (listRodadas[rodadaId - 1].findIndex(x => x.playerWin.id === +playerId) >= 0) {
+                        cell.classList.add("winner");
+                    }
+
+                });
+
+            });
+
+        }
+
+        function getTableRow(rodada, chave) {
+            let row = document.createElement("tr");
+
+            row.classList.add("rodada-" + rodada);
+
+            let id = document.createElement("td");
+            let player1 = document.createElement("td");
+            let result1 = document.createElement("td");
+            let result2 = document.createElement("td");
+            let player2 = document.createElement("td");
+
+            let resultInput1 = document.createElement("input");
+            resultInput1.classList.add("input-result");
+            resultInput1.setAttribute("maxlength", 1);
+            resultInput1.setAttribute("rodadaId", rodada);
+            resultInput1.setAttribute("gameId", chave.id);
+            resultInput1.setAttribute("playerId", chave.player1.id);
+
+            let resultInput2 = document.createElement("input");
+            resultInput2.classList.add("input-result");
+            resultInput2.setAttribute("maxlength", "1");
+            resultInput2.setAttribute("rodadaId", rodada);
+            resultInput2.setAttribute("gameId", chave.id);
+            resultInput2.setAttribute("playerId", chave.player2.id);
+
+            result1.appendChild(resultInput1);
+            result2.appendChild(resultInput2);
+
+            id.innerText = chave.id;
+            id.style.textAlign = "center";
+
+            player1.innerText = chave.player1.id !== 0 ? `${chave.player1.player} | ${chave.player1.deck}` : "BYE";
+            player2.innerText = chave.player2.id !== 0 ? `${chave.player2.player} | ${chave.player2.deck}` : "BYE";
+
+            player1.setAttribute("playerId", chave.player1.id);
+            player2.setAttribute("playerId", chave.player2.id);
+            player1.setAttribute("rodadaId", rodada);
+            player2.setAttribute("rodadaId", rodada);
+            player1.classList.add("player");
+            player2.classList.add("player");
+
+
+            if (chave.playerWin) {
+                resultInput1.setAttribute("disabled", true);
+                resultInput2.setAttribute("disabled", true);
+            }
+
+            // Append cells to row
+            row.appendChild(id);
+            row.appendChild(player1);
+            row.appendChild(result1);
+            row.appendChild(result2);
+            row.appendChild(player2);
+
+            return row;
+        }
+
+        function getTableHead() {
+            //CRIANDO A HEADER
+            let thead = document.createElement("thead");
+            let head = document.createElement("tr");
+
+            // Create cells
+            let game = document.createElement("th");
+            game.setAttribute("WIDTH", "5%");
+
+            let player1 = document.createElement("th");
+            player1.setAttribute("WIDTH", "40%");
+
+            let result = document.createElement("th");
+            result.setAttribute("colspan", "2");
+            result.style.textAlign = "center";
+
+            let player2 = document.createElement("th");
+            player2.setAttribute("WIDTH", "40%");
+
+            // Insert data to cells
+            game.innerText = "GAME";
+            player1.innerText = "PLAYER";
+            result.innerText = "RESULTADO";
+            player2.innerText = "PLAYER";
+
+            head.appendChild(game);
+            head.appendChild(player1);
+            head.appendChild(result);
+            head.appendChild(player2);
+
+            thead.appendChild(head);
+
+            return thead;
+        }
+
+        function onlyNumbers(e) {
+            var charCode = (e.which) ? e.which : event.keyCode
+            if (String.fromCharCode(charCode).match(/[^0-9]/g))
+                return false;
+
+        }
+
+        function SetResultado(result, playerId, gameId, rodadaId) {
+            listRodadas[rodadaId - 1].forEach(chave => {
+                if (chave.id === gameId) {
+                    if (chave.player1.id === playerId) {
+                        chave.result1 = result;
+                    }
+                    if (chave.player2.id === playerId) {
+                        chave.result2 = result;
+                    }
+
+                    if(+chave.result1 === chave.result2) {
+                        alert("Não gostamos de empate!");
+                    }
+
+                    if (chave.result1 != null && chave.result2 != null && (chave.result1 != chave.result2)) {
+                        chave.playerWin = chave.result1 > chave.result2 ? chave.player1 : chave.player2;
+                    }
+                }
+            });
+
+            verificaFinalRodada(rodadaId);
+        }
+
+        function verificaFinalRodada(rodadaId) {
+            var isAllResult = listRodadas[rodadaId - 1].filter(x => x.playerWin == null);
+            if (isAllResult.length === 0) {
+                $("#finalizar-rodada-" + rodadaId).attr("disabled", false)
+            } else {
+                $("#finalizar-rodada-" + rodadaId).attr("disabled", true)
+            }
+        }
+
+
+    </script>
+
+
+
+
+
+</body>
+
+</html>
